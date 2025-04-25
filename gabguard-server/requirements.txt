@@ -1,0 +1,8 @@
+fastapi[all]
+transformers
+torch
+pydub
+pymongo
+uvicorn
+googletrans==4.0.0-rc1 
+openai 

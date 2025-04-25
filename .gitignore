@@ -1,0 +1,49 @@
+# Wirtualne środowisko
+.venv/
+venv/
+
+# Pliki Pycache
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Baza danych (jeśli nie chcesz jej wersjonować)
+db/__pycache__/
+db/*.sqlite  # Jeśli używasz SQLite
+db/*.dump    # Inne formaty dumpów bazy danych
+
+# Pliki specyficzne dla IDE (Visual Studio Code)
+.vscode/
+
+# Pliki tymczasowe i logi
+*.log
+*.tmp
+temp/
+tmp/
+
+# Pliki dystrybucyjne / build
+build/
+dist/
+sdist/
+
+# Pliki wykonywalne
+*.exe
+*.dll
+
+# Inne pliki specyficzne dla systemu operacyjnego
+.DS_Store       # macOS
+Thumbs.db       # Windows
+
+# Pliki konfiguracyjne, które mogą zawierać sekrety (opcjonalnie, z rozwagą)
+# config.py       # Jeśli zawiera hasła lub inne wrażliwe dane
+# *.ini           # Inne pliki konfiguracyjne
+# *.json          # Inne pliki konfiguracyjne
+
+# Inne pliki generowane przez narzędzia
+.pytest_cache/
+coverage/
+.coverage
+
+# Pliki uruchamiające i opisy
+start.ps1
+.uruchomienie

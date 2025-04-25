@@ -1,0 +1,12 @@
+gabguard-server/
+│
+├── main.py                    # Główny serwer FastAPI
+├── models/
+│   ├── text_classifier.py     # NLP (toxicity)
+│   └── audio_analyzer.py      # Whisper (mowa na tekst)
+├── schemas.py                 # Schematy Pydantic
+├── db/
+│   └── mongodb.py             # MongoDB (połączenie i operacje)
+├── websocket/
+│   └── socket_handler.py      # WebSocket obsługa
+└── config.py                  # Ustawienia globalne

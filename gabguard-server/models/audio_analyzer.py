@@ -17,5 +17,9 @@ def analyze_audio(file):
     with open(wav_path, "rb") as audio_file:
         transcription = openai.Audio.transcribe("whisper-1", audio_file)["text"]
 
-    score, label = analyze_text(transcription)
+    # Użyj poprawnie analyze_text
+    result = analyze_text(transcription)
+    score = result["bert_score"]
+    label = result["bert_label"]
+
     return transcription, score, label

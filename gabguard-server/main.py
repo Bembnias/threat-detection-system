@@ -1,10 +1,16 @@
-from fastapi import FastAPI, UploadFile, File
-from schemas import TextRequest, TextResponse, AudioResponse
+from fastapi import FastAPI, UploadFile, File, Query, HTTPException, Request
+from fastapi.responses import StreamingResponse
+from schemas import TextRequest, TextResponse, AudioResponse, Violation
 from models.text_classifier import analyze_text
 from models.audio_analyzer import analyze_audio
-from db.mongodb import report_violation, init_db
+from db.mongodb import report_violation, init_db, get_violations_by_user_and_days
 from websocket.socket_handler import websocket_endpoint
 from fastapi import WebSocket
+from typing import List
+from datetime import datetime, timedelta
+from io import BytesIO
+from report_generator import generate_violation_pdf
+
 app = FastAPI()
 
 @app.on_event("startup")
@@ -15,18 +21,34 @@ async def startup_db():
 async def analyze_text_route(request: TextRequest):
     bert_score, gpt_score = analyze_text(request.text)
     score = (bert_score + gpt_score)/2
-    if score > 0.85:
+    if score > 0.9:
         report_violation(user_id=request.user_id, content=request.text, type="text", score=score)
-    return {"toxicity_score": score}
+    return {"user_id": request.user_id, "text": request.text ,"toxicity_score": score}
 
 @app.post("/analyze_audio", response_model=AudioResponse)
 async def analyze_audio_route(file: UploadFile = File(...), user_id: str = "unknown"):
     transcription, bert_score, gpt_score= analyze_audio(file.file)
     score = (bert_score + gpt_score)/2
-    if score > 0.85:
+    if score > 0.9:
         report_violation(user_id=user_id, content=transcription, type="audio", score=score)
-    return {"transcription": transcription, "toxicity_score": score}
+    return {"user_id": user_id, "transcription": transcription, "toxicity_score": score}
 
 @app.websocket("/ws/audio")
 async def audio_socket(websocket: WebSocket):
     await websocket_endpoint(websocket)
+
+@app.get("/users/{user_id}/violations/recent")
+async def get_recent_user_violations(request: Request, user_id: str, days: int = Query(default=60, description="Number of days back for the PDF report"), admin_id: str = Query(..., description="ID of the admin generating the report")):
+    violations_data = get_violations_by_user_and_days(user_id, days)
+    if not violations_data:
+        raise HTTPException(status_code=404, detail="No violations found for this user in the specified period.")
+
+    pdf_buffer, filename = generate_violation_pdf(user_id, admin_id, violations_data, days)
+    pdf_content = pdf_buffer.getvalue()
+
+    headers = {
+        'Content-Disposition': f'attachment; filename="{filename}"',
+        'Content-Type': 'application/pdf'
+    }
+
+    return StreamingResponse(BytesIO(pdf_content), headers=headers, media_type='application/pdf')

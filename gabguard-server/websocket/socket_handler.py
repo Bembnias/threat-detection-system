@@ -12,8 +12,9 @@ async def websocket_endpoint(websocket: WebSocket):
             with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
                 tmp.write(buffer)
                 tmp.flush()
-                transcription, score, label = analyze_audio(open(tmp.name, "rb"))
-            await websocket.send_json({"transcription": transcription, "toxicity_score": score, "label": label})
+                transcription, bert_score, gpt_score = analyze_audio(open(tmp.name, "rb"))
+                score = (bert_score + gpt_score)/2
+            await websocket.send_json({"transcription": transcription, "toxicity_score": score})
             buffer.clear()
         else:
             buffer.extend(data)

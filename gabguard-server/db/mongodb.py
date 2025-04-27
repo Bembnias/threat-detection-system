@@ -9,12 +9,11 @@ def init_db():
     client = MongoClient("mongodb://localhost:27017/")
     db = client["gabguard"]
 
-def report_violation(user_id, content, type, score, label):
+def report_violation(user_id, content, type, score):
     db.violations.insert_one({
         "user_id": user_id,
         "type": type,
         "content": content,
         "score": score,
-        "label": label,
         "timestamp": datetime.utcnow()
     })

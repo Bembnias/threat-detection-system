@@ -13,17 +13,19 @@ async def startup_db():
 
 @app.post("/analyze_text", response_model=TextResponse)
 async def analyze_text_route(request: TextRequest):
-    score, label = analyze_text(request.text)
+    bert_score, gpt_score = analyze_text(request.text)
+    score = (bert_score + gpt_score)/2
     if score > 0.85:
-        report_violation(user_id=request.user_id, content=request.text, type="text", score=score, label=label)
-    return {"toxicity_score": score, "label": label}
+        report_violation(user_id=request.user_id, content=request.text, type="text", score=score)
+    return {"toxicity_score": score}
 
 @app.post("/analyze_audio", response_model=AudioResponse)
 async def analyze_audio_route(file: UploadFile = File(...), user_id: str = "unknown"):
-    transcription, score, label = analyze_audio(file.file)
+    transcription, bert_score, gpt_score= analyze_audio(file.file)
+    score = (bert_score + gpt_score)/2
     if score > 0.85:
-        report_violation(user_id=user_id, content=transcription, type="audio", score=score, label=label)
-    return {"transcription": transcription, "toxicity_score": score, "label": label}
+        report_violation(user_id=user_id, content=transcription, type="audio", score=score)
+    return {"transcription": transcription, "toxicity_score": score}
 
 @app.websocket("/ws/audio")
 async def audio_socket(websocket: WebSocket):

@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class TextRequest(BaseModel):
     text: str
@@ -6,9 +7,7 @@ class TextRequest(BaseModel):
 
 class TextResponse(BaseModel):
     toxicity_score: float
-    label: str
 
 class AudioResponse(BaseModel):
     transcription: str
     toxicity_score: float
-    label: str

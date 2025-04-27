@@ -35,7 +35,7 @@ sdist/
 Thumbs.db       # Windows
 
 # Pliki konfiguracyjne, które mogą zawierać sekrety (opcjonalnie, z rozwagą)
-# config.py       # Jeśli zawiera hasła lub inne wrażliwe dane
+config.py       # Jeśli zawiera hasła lub inne wrażliwe dane
 # *.ini           # Inne pliki konfiguracyjne
 # *.json          # Inne pliki konfiguracyjne
 

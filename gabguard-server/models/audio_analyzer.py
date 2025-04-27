@@ -2,7 +2,7 @@ import openai
 import tempfile
 from pydub import AudioSegment
 from models.text_classifier import analyze_text
-from config import OpenAI_api
+from config_app import OpenAI_api
 
 openai.api_key = OpenAI_api
 

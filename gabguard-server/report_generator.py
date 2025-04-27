@@ -55,27 +55,12 @@ def generate_violation_pdf(user_id: str, admin_id: str, violations_data: List[di
         fontSize=10,
         leading=12
     )
-    heading1_style = ParagraphStyle(
-        name='Heading1',
-        parent=styles['Heading1'],
-        fontName='DejaVuSans-Bold',
-        fontSize=18,
-        leading=22,
-        alignment=1  # Wyśrodkowanie
-    )
     heading2_style = ParagraphStyle(
         name='Heading2',
         parent=styles['Heading2'],
         fontName='DejaVuSans-Bold',
         fontSize=14,
         leading=18
-    )
-    heading3_style = ParagraphStyle(
-        name='Heading3',
-        parent=styles['Heading3'],
-        fontName='DejaVuSans-Bold',
-        fontSize=12,
-        leading=14
     )
     content_style = ParagraphStyle(
         name='ContentStyle',
@@ -86,6 +71,12 @@ def generate_violation_pdf(user_id: str, admin_id: str, violations_data: List[di
 
     story = []
     generation_time = datetime.utcnow()
+
+    # Definiowanie kolorów na podstawie kolorów logo
+    logo_color_light = colors.Color(0.23, 0.76, 0.90)   # Przybliżony #3ac2e6
+    logo_color_dark = colors.Color(0.15, 0.27, 0.60)    # Przybliżony #25459a
+    table_header_text_color = colors.whitesmoke
+    table_body_background_color = colors.beige # Możesz zmienić na jaśniejszy odcień logo_color_light
 
     # Wyśrodkowane logo
     if os.path.exists(LOGO_PATH):
@@ -119,7 +110,7 @@ def generate_violation_pdf(user_id: str, admin_id: str, violations_data: List[di
 
     table = Table(table_data, colWidths=[1.8*inch, 0.8*inch, 3.5*inch, 1*inch])
     table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('BACKGROUND', (0, 0), (-1, 0), logo_color_dark),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'DejaVuSans-Bold'),
@@ -127,8 +118,8 @@ def generate_violation_pdf(user_id: str, admin_id: str, violations_data: List[di
         ('FONTSIZE', (0, 0), (-1, -1), 9),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
         ('TOPPADDING', (0, 0), (-1, 0), 10),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('BACKGROUND', (0, 1), (-1, -1), table_body_background_color),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black), # Możesz zmienić kolor linii siatki
         ('ALIGN', (2, 1), (2, -1), 'LEFT'), # Wyrównaj tekst w "Content" do lewej
     ]))
 

@@ -1,6 +1,6 @@
 from transformers import pipeline
 from googletrans import Translator
-from config import OpenAI_api
+from config_app import OpenAI_api
 import openai
 
 # Inicjalizacja klasyfikatora toksyczności

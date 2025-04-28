@@ -1,12 +1,23 @@
 gabguard-server/
 │
-├── main.py                    # Główny serwer FastAPI
+├── main.py                         # Główny serwer FastAPI
 ├── models/
-│   ├── text_classifier.py     # NLP (toxicity)
-│   └── audio_analyzer.py      # Whisper (mowa na tekst)
-├── schemas.py                 # Schematy Pydantic
+│   ├── image_moderator.py          # Analiza obrazów
+│   ├── video_analysis.py           # Analiza video
+│   ├── text_classifier.py          # NLP (toxicity)
+│   └── audio_analyzer.py           # Whisper (mowa na tekst)
+├── schemas.py                      # Schematy Pydantic
 ├── db/
-│   └── mongodb.py             # MongoDB (połączenie i operacje)
+│   └── mongodb.py                  # MongoDB (połączenie i operacje)
 ├── websocket/
-│   └── socket_handler.py      # WebSocket obsługa
-└── config.py                  # Ustawienia globalne
+│   └── socket_handler.py           # WebSocket obsługa
+├── config_app.py                   # Ustawienia globalne
+├── fonts/
+|   ├── DejaVuSans-Bold.ttf
+|   ├── DejaVuSans-BoldOblique.ttf
+|   ├── DejaVuSans-Oblique.ttf
+|   └── gabguard-server/fonts/
+├── logo
+|   └── Logo_GabGuard.png           # Logo systemu
+└── report
+    └── report_generator.py         # Generator raportu

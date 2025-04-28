@@ -1,15 +1,14 @@
-from fastapi import FastAPI, UploadFile, File, Query, HTTPException, Request
+from fastapi import FastAPI, UploadFile, File, Query, Request
 from fastapi.responses import StreamingResponse
-from schemas import TextRequest, TextResponse, AudioResponse, Violation
+from schemas import TextRequest, TextResponse, AudioResponse
 from models.text_classifier import analyze_text
 from models.audio_analyzer import analyze_audio
+from models.image_moderator import analyze_image
 from db.mongodb import report_violation, init_db, get_violations_by_user_and_days
 from websocket.socket_handler import websocket_endpoint
+from report.report_generator import generate_violation_pdf
 from fastapi import WebSocket
-from typing import List
-from datetime import datetime, timedelta
 from io import BytesIO
-from report_generator import generate_violation_pdf
 
 app = FastAPI()
 
@@ -36,6 +35,25 @@ async def analyze_audio_route(file: UploadFile = File(...), user_id: str = "unkn
 @app.websocket("/ws/audio")
 async def audio_socket(websocket: WebSocket):
     await websocket_endpoint(websocket)
+
+@app.post("/analyze-image/")
+async def analyze_image_endpoint(file: UploadFile = File(...), user_id: str = "unknown"):
+    image_bytes = await file.read()
+    result = await analyze_image(image_bytes)
+    print(f"Wynik z analyze_image_separated: {result}")  # Logowanie wyniku
+
+    description = result.get("description", "No description available.")
+    score = result.get("toxicity_score", 0.5)
+
+
+    report_violation(
+        user_id=user_id,
+        content=f"Detected content: {description}",
+        type="image",
+        score=score
+    )
+
+    return {"user_id": user_id, "score": score, "description": description}
 
 @app.get("/users/{user_id}/violations/recent")
 async def get_recent_user_violations(request: Request, user_id: str, days: int = Query(default=60, description="Number of days back for the PDF report"), admin_id: str = Query(..., description="ID of the admin generating the report")):

@@ -7,3 +7,8 @@ uvicorn
 googletrans==4.0.0-rc1 
 openai 
 reportlab
+pillow
+requests
+moviepy
+opencv-python
+imageio[ffmpeg]

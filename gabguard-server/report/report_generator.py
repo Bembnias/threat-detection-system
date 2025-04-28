@@ -1,5 +1,3 @@
-# report_generator.py
-
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageTemplate, BaseDocTemplate, Frame, Image
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle

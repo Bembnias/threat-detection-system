@@ -11,7 +11,7 @@ def analyze_audio(file):
         tmp.write(file.read())
         tmp.flush()
         audio = AudioSegment.from_file(tmp.name)
-        wav_path = tmp.name.replace(".mp3", ".wav")
+        wav_path = tmp.name.replace(".mp3", ".wav", ".ogg", ".m4a", ".flac", ".aac")
         audio.export(wav_path, format="wav")
 
     with open(wav_path, "rb") as audio_file:

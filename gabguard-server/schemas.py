@@ -16,6 +16,11 @@ class AudioResponse(BaseModel):
     transcription: str
     toxicity_score: float
 
+class VideoResponse(BaseModel):
+    user_id: str
+    description: str
+    toxicity_score: float
+
 class Violation(BaseModel):
     id: Optional[str] = Field(alias="_id")
     user_id: str

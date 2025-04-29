@@ -2,9 +2,10 @@ gabguard-server/
 │
 ├── main.py                         # Główny serwer FastAPI
 ├── models/
-│   ├── image_moderator.py          # Analiza obrazów
-│   ├── video_analysis.py           # Analiza video
-│   ├── text_classifier.py          # NLP (toxicity)
+│   ├── file_analyzer.py            #annaliza plików tekstowych OpenAI
+│   ├── image_moderator.py          # Analiza obrazów OpenAI
+│   ├── video_analysis.py           # Analiza video OpenAI
+│   ├── text_classifier.py          # NLP (toxicity) + OpenAI
 │   └── audio_analyzer.py           # Whisper (mowa na tekst)
 ├── schemas.py                      # Schematy Pydantic
 ├── db/
@@ -16,7 +17,7 @@ gabguard-server/
 |   ├── DejaVuSans-Bold.ttf
 |   ├── DejaVuSans-BoldOblique.ttf
 |   ├── DejaVuSans-Oblique.ttf
-|   └── gabguard-server/fonts/
+|   └── DejaVuSans.ttf
 ├── logo
 |   └── Logo_GabGuard.png           # Logo systemu
 └── report

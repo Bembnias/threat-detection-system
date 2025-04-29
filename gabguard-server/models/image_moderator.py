@@ -49,7 +49,7 @@ async def evaluate_toxicity(description: str) -> float:
     try:
         # Tworzymy zapytanie do analizy toksyczności tekstu
         response = await openai.ChatCompletion.acreate(
-            model="gpt-4",  # Użycie modelu GPT-4 do analizy toksyczności
+            model="gpt-4o",  # Użycie modelu GPT-4 do analizy toksyczności
             messages=[
                 {"role": "system", "content": "Assess the following text for inappropriate content (violence, hate speech, racism, etc.). Provide only a score from 0 to 1, where 0 means no inappropriate content, and 1 means highly inappropriate."},
                 {"role": "user", "content": description}

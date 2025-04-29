@@ -1,14 +1,14 @@
-fastapi[all]
-transformers
-torch
-pydub
-pymongo
-uvicorn
-googletrans==4.0.0-rc1 
-openai 
-reportlab
-pillow
-requests
-moviepy
-opencv-python
-imageio[ffmpeg]
+fastapi[all]            # FastAPI z wszystkimi dodatkowymi zależnościami
+transformers            # Biblioteka do pracy z modelami NLP
+torch                   # Biblioteka PyTorch do uczenia maszynowego
+pydub                   # Do przetwarzania plików audio
+pymongo                 # Klient MongoDB dla Pythona
+uvicorn                 # Serwer ASGI do uruchamiania aplikacji FastAPI
+googletrans==4.0.0-rc1  # Tłumaczenie tekstu przy użyciu Google Translate
+openai                  # Klient do interakcji z API OpenAI
+reportlab               # Generowanie dokumentów PDF
+pillow                  # Przetwarzanie obrazów
+requests                # Wysyłanie zapytań HTTP
+moviepy                 # Przetwarzanie plików wideo
+opencv-python           # Przetwarzanie obrazów i wideo
+imageio[ffmpeg]         # Odczyt i zapis obrazów oraz wideo

@@ -1,9 +1,11 @@
-from fastapi import FastAPI, UploadFile, File, Query, Request
+import os
+from fastapi import FastAPI, UploadFile, File, Query, Request, HTTPException
 from fastapi.responses import StreamingResponse
-from schemas import TextRequest, TextResponse, AudioResponse
+from schemas import TextRequest, TextResponse, AudioResponse, VideoResponse
 from models.text_classifier import analyze_text
 from models.audio_analyzer import analyze_audio
 from models.image_moderator import analyze_image
+from models.video_analysis import analyze_video
 from db.mongodb import report_violation, init_db, get_violations_by_user_and_days
 from websocket.socket_handler import websocket_endpoint
 from report.report_generator import generate_violation_pdf
@@ -20,7 +22,7 @@ async def startup_db():
 async def analyze_text_route(request: TextRequest):
     bert_score, gpt_score = analyze_text(request.text)
     score = (bert_score + gpt_score)/2
-    if score > 0.9:
+    if score > 0.8:
         report_violation(user_id=request.user_id, content=request.text, type="text", score=score)
     return {"user_id": request.user_id, "text": request.text ,"toxicity_score": score}
 
@@ -28,9 +30,39 @@ async def analyze_text_route(request: TextRequest):
 async def analyze_audio_route(file: UploadFile = File(...), user_id: str = "unknown"):
     transcription, bert_score, gpt_score= analyze_audio(file.file)
     score = (bert_score + gpt_score)/2
-    if score > 0.9:
+    if score > 0.8:
         report_violation(user_id=user_id, content=transcription, type="audio", score=score)
     return {"user_id": user_id, "transcription": transcription, "toxicity_score": score}
+
+@app.post("/analyze_video", response_model=VideoResponse)
+async def analyze_video_route(file: UploadFile = File(...), user_id: str = "unknown"):
+    # Validate file format
+    allowed_extensions = {".mp4", ".mov", ".avi", ".mkv", ".webm", ".wmv", ".flv", ".mpeg", ".3gp"}
+    file_ext = os.path.splitext(file.filename)[1].lower()
+    
+    if file_ext not in allowed_extensions:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Unsupported file format. Allowed formats: {', '.join(allowed_extensions)}"
+        )
+    
+    # Process the video
+    result = await analyze_video(file)
+    
+    # Report violation if toxicity score exceeds threshold
+    if result["toxicity_score"] > 0.8:
+        report_violation(
+            user_id=user_id,
+            content=f"Video content: {result['description']}",
+            type="video",
+            score=result["toxicity_score"]
+        )
+    
+    return {
+        "user_id": user_id,
+        "description": result["description"],
+        "toxicity_score": result["toxicity_score"]
+    }
 
 @app.websocket("/ws/audio")
 async def audio_socket(websocket: WebSocket):
@@ -40,18 +72,17 @@ async def audio_socket(websocket: WebSocket):
 async def analyze_image_endpoint(file: UploadFile = File(...), user_id: str = "unknown"):
     image_bytes = await file.read()
     result = await analyze_image(image_bytes)
-    print(f"Wynik z analyze_image_separated: {result}")  # Logowanie wyniku
 
     description = result.get("description", "No description available.")
     score = result.get("toxicity_score", 0.5)
 
-
-    report_violation(
-        user_id=user_id,
-        content=f"Detected content: {description}",
-        type="image",
-        score=score
-    )
+    if score > 0.8:
+        report_violation(
+            user_id=user_id,
+            content=f"Detected content: {description}",
+            type="image",
+            score=score
+        )
 
     return {"user_id": user_id, "score": score, "description": description}
 

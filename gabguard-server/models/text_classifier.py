@@ -18,7 +18,7 @@ def gpt_check_toxicity(text: str):
     prompt = f"Please assess the toxicity level of the following text on a scale from 0 to 1, where 0 means no toxicity and 1 means the highest level of toxicity. Consider the context of the text in your assessment. Answer with only a single number between 0 and 1.\n\nText: {text}"
 
     response = openai.ChatCompletion.create(
-        model="gpt-4",
+        model="gpt-4o",
         messages=[
             {"role": "user", "content": prompt}
         ],

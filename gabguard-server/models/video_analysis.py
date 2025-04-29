@@ -55,7 +55,7 @@ async def analyze_video(video_file):
         logger.error(f"Error analyzing video: {str(e)}")
         return {
             "description": "Error processing video",
-            "toxicity_score": 0.5  # Default neutral score in case of error
+            "toxicity_score": -1 
         }
 
 async def analyze_audio_content(audio_path):
@@ -237,7 +237,7 @@ async def combine_analysis(video_result, audio_result):
         try:
             toxicity_score = float(score_text)
         except ValueError:
-            toxicity_score = 0.5  # fallback default
+            toxicity_score = -1
 
         return {
             "description": description_content,
@@ -248,5 +248,5 @@ async def combine_analysis(video_result, audio_result):
         logger.error(f"Error combining analysis: {str(e)}")
         return {
             "description": "Error combining video and audio analysis",
-            "toxicity_score": 0.5
+            "toxicity_score": -1
         }

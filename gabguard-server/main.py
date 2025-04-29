@@ -1,11 +1,8 @@
-import os
 from fastapi import FastAPI, UploadFile, File, Query, Request, HTTPException
 from fastapi.responses import StreamingResponse
-from schemas import TextRequest, TextResponse, AudioResponse, VideoResponse
+from schemas import TextRequest, TextResponse, AudioResponse
 from models.text_classifier import analyze_text
 from models.audio_analyzer import analyze_audio
-from models.image_moderator import analyze_image
-from models.video_analysis import analyze_video
 from models.file_analyzer import analyze_file_content
 from db.mongodb import report_violation, init_db, get_violations_by_user_and_days
 from websocket.socket_handler import websocket_endpoint
@@ -35,10 +32,6 @@ async def analyze_audio_route(file: UploadFile = File(...), user_id: str = "unkn
         report_violation(user_id=user_id, content=transcription, type="audio", score=score)
     return {"user_id": user_id, "transcription": transcription, "toxicity_score": score}
 
-@app.websocket("/ws/audio")
-async def audio_socket(websocket: WebSocket):
-    await websocket_endpoint(websocket)
-
 @app.post("/analyze-file/")
 async def analyze_file_endpoint(file: UploadFile = File(...), user_id: str = "unknown"):
     """
@@ -54,7 +47,7 @@ async def analyze_file_endpoint(file: UploadFile = File(...), user_id: str = "un
     result = await analyze_file_content(file.file, file.filename)
     
     description = result.get("description", "No description available.")
-    score = result.get("toxicity_score", 0.5)
+    score = result.get("toxicity_score", -1)
     
     if score > 0.8:
         report_violation(
@@ -85,3 +78,7 @@ async def get_recent_user_violations(request: Request, user_id: str, days: int =
     }
 
     return StreamingResponse(BytesIO(pdf_content), headers=headers, media_type='application/pdf')
+
+@app.websocket("/ws/audio")
+async def audio_socket(websocket: WebSocket):
+    await websocket_endpoint(websocket)

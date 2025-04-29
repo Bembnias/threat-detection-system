@@ -76,7 +76,7 @@ async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
                 os.unlink(temp_path)
                 return {
                     "description": f"Video file that could not be analyzed: {str(e)}",
-                    "toxicity_score": 0.5,
+                    "toxicity_score": -1,
                     "mime_type": mime_type,
                     "file_size": len(file_content)
                 }
@@ -88,7 +88,7 @@ async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
                 if len(file_content) > 25 * 1024 * 1024:  # 25 MB in bytes
                     return {
                         "description": f"Audio file is too large for analysis (size: {len(file_content) / (1024 * 1024):.2f} MB, limit: 25 MB). Consider compressing or trimming the file.",
-                        "toxicity_score": 0.5,
+                        "toxicity_score": -1,
                         "mime_type": mime_type,
                         "file_size": len(file_content)
                     }
@@ -121,14 +121,14 @@ async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
                 if "Maximum content size limit" in error_msg:
                     return {
                         "description": f"Audio file is too large for analysis (limit: 25 MB). Please compress or trim the file.",
-                        "toxicity_score": 0.5,
+                        "toxicity_score": -1,
                         "mime_type": mime_type,
                         "file_size": len(file_content)
                     }
                 
                 return {
                     "description": f"Audio file that could not be analyzed: {error_msg}",
-                    "toxicity_score": 0.5,
+                    "toxicity_score": -1,
                     "mime_type": mime_type,
                     "file_size": len(file_content)
                 }
@@ -140,7 +140,7 @@ async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
                 if len(file_content) > 20 * 1024 * 1024:  # 20 MB in bytes
                     return {
                         "description": f"Image file is too large for analysis (size: {len(file_content) / (1024 * 1024):.2f} MB, limit: 20 MB). Consider resizing or compressing the image.",
-                        "toxicity_score": 0.5,
+                        "toxicity_score": -1,
                         "mime_type": mime_type,
                         "file_size": len(file_content)
                     }
@@ -160,7 +160,7 @@ async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
                 if "Maximum content size limit" in error_msg:
                     return {
                         "description": f"Image file is too large for analysis (limit: 20 MB). Please resize or compress the image.",
-                        "toxicity_score": 0.5,
+                        "toxicity_score": -1,
                         "mime_type": mime_type,
                         "file_size": len(file_content)
                     }
@@ -168,7 +168,7 @@ async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
                 # If image analysis fails, fall back to generic analysis
                 return {
                     "description": f"Image file that could not be analyzed: {error_msg}",
-                    "toxicity_score": 0.5,
+                    "toxicity_score": -1,
                     "mime_type": mime_type,
                     "file_size": len(file_content)
                 }
@@ -196,7 +196,7 @@ async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
     except Exception as e:
         return {
             "description": f"Error analyzing file: {str(e)}",
-            "toxicity_score": 0.5,  # Default middle score
+            "toxicity_score": -1,  # Default middle score
             "mime_type": "unknown",
             "file_size": 0
         }
@@ -467,10 +467,10 @@ Toxicity score (0-1):"""
                 # Ensure score is within bounds
                 return max(0.0, min(1.0, score))
             else:
-                return 0.5  # Default middle score
+                return -1  # Default middle score
         else:
-            return 0.5  # Default middle score
+            return -1  # Default middle score
     
     except Exception as e:
         print(f"Error getting toxicity score: {str(e)}")
-        return 0.5  # Default middle score
+        return -1  # Default middle score

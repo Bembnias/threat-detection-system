@@ -64,9 +64,9 @@ async def evaluate_toxicity(description: str) -> float:
             score = float(toxicity_score)
             return max(0.0, min(1.0, score))  # Upewniamy się, że wynik mieści się w przedziale 0-1
         except ValueError:
-            return 0.5  # Domyślna wartość, jeśli nie uda się sparsować wyniku
+            return -1  # Domyślna wartość, jeśli nie uda się sparsować wyniku
     except Exception as e:
-        return 0.5
+        return -1
 
 # Główna funkcja analizująca obraz
 async def analyze_image(image_bytes: bytes) -> Dict:

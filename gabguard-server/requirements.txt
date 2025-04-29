@@ -14,5 +14,5 @@ opencv-python           # Przetwarzanie obrazów i wideo
 imageio[ffmpeg]         # Odczyt i zapis obrazów oraz wideo
 PyPDF2
 python-docx
-magicpython-magic
+python-magic
 python-magic-bin

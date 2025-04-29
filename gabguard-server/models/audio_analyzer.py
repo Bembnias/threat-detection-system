@@ -2,7 +2,7 @@ import openai
 import tempfile
 from pydub import AudioSegment
 from models.text_classifier import analyze_text
-from config_app import OpenAI_api
+from config_api import OpenAI_api
 
 openai.api_key = OpenAI_api
 
@@ -11,7 +11,7 @@ def analyze_audio(file):
         tmp.write(file.read())
         tmp.flush()
         audio = AudioSegment.from_file(tmp.name)
-        wav_path = tmp.name.replace(".mp3", ".wav", ".ogg", ".m4a", ".flac", ".aac")
+        wav_path = tmp.name.replace(".mp3", ".wav")
         audio.export(wav_path, format="wav")
 
     with open(wav_path, "rb") as audio_file:

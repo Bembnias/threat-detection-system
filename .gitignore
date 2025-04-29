@@ -38,6 +38,7 @@ Thumbs.db       # Windows
 gabguard-server/app_config.py      # Jeśli zawiera hasła lub inne wrażliwe dane
 gabguard-server/config_app.py
 config_app.py
+config_api.py
 # *.ini           # Inne pliki konfiguracyjne
 # *.json          # Inne pliki konfiguracyjne
 

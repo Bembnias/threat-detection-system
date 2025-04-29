@@ -1,19 +1,19 @@
 import os
-import mimetypes
-import httpx
 import json
 import PyPDF2
 import docx
 import csv
 from io import BytesIO
-from typing import BinaryIO, Dict, Any, Tuple, Optional
+from typing import BinaryIO, Dict, Any
 import magic
 import tempfile
 import zipfile
 import xml.etree.ElementTree as ET
-from config_app import OpenAI_api
+from config_api import OpenAI_api
 import openai
 from models.video_analysis import analyze_video
+from models.audio_analyzer import analyze_audio
+from models.image_moderator import analyze_image
 
 # Use API key from config
 openai.api_key = OpenAI_api
@@ -80,8 +80,100 @@ async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
                     "mime_type": mime_type,
                     "file_size": len(file_content)
                 }
+            
+        # Handle audio files with specialized audio analysis module
+        if mime_type.startswith('audio/') or file_extension in [".mp3", ".wav", ".ogg", ".m4a", ".flac", ".aac"]:
+            try:
+                # Check file size - OpenAI API has a 25MB limit
+                if len(file_content) > 25 * 1024 * 1024:  # 25 MB in bytes
+                    return {
+                        "description": f"Audio file is too large for analysis (size: {len(file_content) / (1024 * 1024):.2f} MB, limit: 25 MB). Consider compressing or trimming the file.",
+                        "toxicity_score": 0.5,
+                        "mime_type": mime_type,
+                        "file_size": len(file_content)
+                    }
+                
+                # Create a temporary file
+                with tempfile.NamedTemporaryFile(suffix=file_extension, delete=False) as temp_file:
+                    temp_file.write(file_content)
+                    temp_path = temp_file.name
+                
+                # Create a file-like object for analyze_audio
+                with open(temp_path, 'rb') as audio_file:
+                    # Call analyze_audio directly as it's imported from models.audio_analyzer
+                    transcription, score, gpt_score = analyze_audio(audio_file)
+                
+                # Clean up temporary file
+                os.unlink(temp_path)
+                
+                return {
+                    "description": f"Audio file transcription: {transcription}",
+                    "toxicity_score": score,
+                    "ai_score": gpt_score,
+                    "mime_type": mime_type,
+                    "file_size": len(file_content)
+                }
+            except Exception as e:
+                # If audio analysis fails, fall back to generic analysis
+                error_msg = str(e)
+                
+                # Check for specific error messages
+                if "Maximum content size limit" in error_msg:
+                    return {
+                        "description": f"Audio file is too large for analysis (limit: 25 MB). Please compress or trim the file.",
+                        "toxicity_score": 0.5,
+                        "mime_type": mime_type,
+                        "file_size": len(file_content)
+                    }
+                
+                return {
+                    "description": f"Audio file that could not be analyzed: {error_msg}",
+                    "toxicity_score": 0.5,
+                    "mime_type": mime_type,
+                    "file_size": len(file_content)
+                }
+                
+        # Handle image files with specialized image analysis module
+        if mime_type.startswith('image/') or file_extension in [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff", ".svg"]:
+            try:
+                # Check file size - OpenAI API has a 20MB limit for images
+                if len(file_content) > 20 * 1024 * 1024:  # 20 MB in bytes
+                    return {
+                        "description": f"Image file is too large for analysis (size: {len(file_content) / (1024 * 1024):.2f} MB, limit: 20 MB). Consider resizing or compressing the image.",
+                        "toxicity_score": 0.5,
+                        "mime_type": mime_type,
+                        "file_size": len(file_content)
+                    }
+                
+                # Analyze image directly using the analyze_image function
+                result = await analyze_image(file_content)
+                
+                # Add additional metadata to the result
+                result["mime_type"] = mime_type
+                result["file_size"] = len(file_content)
+                
+                return result
+            except Exception as e:
+                error_msg = str(e)
+                
+                # Check for specific error messages
+                if "Maximum content size limit" in error_msg:
+                    return {
+                        "description": f"Image file is too large for analysis (limit: 20 MB). Please resize or compress the image.",
+                        "toxicity_score": 0.5,
+                        "mime_type": mime_type,
+                        "file_size": len(file_content)
+                    }
+                    
+                # If image analysis fails, fall back to generic analysis
+                return {
+                    "description": f"Image file that could not be analyzed: {error_msg}",
+                    "toxicity_score": 0.5,
+                    "mime_type": mime_type,
+                    "file_size": len(file_content)
+                }
         
-        # Extract content based on file type for non-video files
+        # Extract content based on file type for non-video/non-audio/non-image files
         extracted_text = await extract_content(file, file_content, mime_type, file_extension)
         
         # If we couldn't extract any text, return a generic message
@@ -151,8 +243,8 @@ async def extract_content(file: BinaryIO, file_content: bytes, mime_type: str, f
     elif mime_type == 'application/zip' or file_extension in ['.zip', '.jar']:
         return extract_zip_content(BytesIO(file_content))
     
-    # Image, audio, video files - just return the MIME type and file size
-    elif mime_type.startswith(('image/', 'audio/', 'video/')):
+    # Video files - just return the MIME type and file size
+    elif mime_type.startswith('video/'):
         return f"{mime_type} file with size {len(file_content)} bytes"
     
     # Binary or unknown files

@@ -39,24 +39,6 @@ async def analyze_audio_route(file: UploadFile = File(...), user_id: str = "unkn
 async def audio_socket(websocket: WebSocket):
     await websocket_endpoint(websocket)
 
-@app.post("/analyze-image/")
-async def analyze_image_endpoint(file: UploadFile = File(...), user_id: str = "unknown"):
-    image_bytes = await file.read()
-    result = await analyze_image(image_bytes)
-
-    description = result.get("description", "No description available.")
-    score = result.get("toxicity_score", 0.5)
-
-    if score > 0.8:
-        report_violation(
-            user_id=user_id,
-            content=f"Detected content: {description}",
-            type="image",
-            score=score
-        )
-
-    return {"user_id": user_id, "score": score, "description": description}
-
 @app.post("/analyze-file/")
 async def analyze_file_endpoint(file: UploadFile = File(...), user_id: str = "unknown"):
     """

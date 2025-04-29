@@ -3,7 +3,7 @@ import tempfile
 import subprocess
 import openai
 from pathlib import Path
-from config_app import OpenAI_api
+from config_api import OpenAI_api
 import logging
 
 # Configure logging

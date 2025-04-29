@@ -1,6 +1,6 @@
 import openai
 import base64
-from config_app import OpenAI_api
+from config_api import OpenAI_api
 from typing import Dict
 
 # Ustawienie klucza API OpenAI

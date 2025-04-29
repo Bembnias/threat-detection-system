@@ -12,3 +12,7 @@ requests                # Wysyłanie zapytań HTTP
 moviepy                 # Przetwarzanie plików wideo
 opencv-python           # Przetwarzanie obrazów i wideo
 imageio[ffmpeg]         # Odczyt i zapis obrazów oraz wideo
+PyPDF2
+python-docx
+magicpython-magic
+python-magic-bin

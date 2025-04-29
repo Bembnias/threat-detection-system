@@ -6,6 +6,7 @@ from models.text_classifier import analyze_text
 from models.audio_analyzer import analyze_audio
 from models.image_moderator import analyze_image
 from models.video_analysis import analyze_video
+from models.file_analyzer import analyze_file_content
 from db.mongodb import report_violation, init_db, get_violations_by_user_and_days
 from websocket.socket_handler import websocket_endpoint
 from report.report_generator import generate_violation_pdf
@@ -34,36 +35,6 @@ async def analyze_audio_route(file: UploadFile = File(...), user_id: str = "unkn
         report_violation(user_id=user_id, content=transcription, type="audio", score=score)
     return {"user_id": user_id, "transcription": transcription, "toxicity_score": score}
 
-@app.post("/analyze_video", response_model=VideoResponse)
-async def analyze_video_route(file: UploadFile = File(...), user_id: str = "unknown"):
-    # Validate file format
-    allowed_extensions = {".mp4", ".mov", ".avi", ".mkv", ".webm", ".wmv", ".flv", ".mpeg", ".3gp"}
-    file_ext = os.path.splitext(file.filename)[1].lower()
-    
-    if file_ext not in allowed_extensions:
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Unsupported file format. Allowed formats: {', '.join(allowed_extensions)}"
-        )
-    
-    # Process the video
-    result = await analyze_video(file)
-    
-    # Report violation if toxicity score exceeds threshold
-    if result["toxicity_score"] > 0.8:
-        report_violation(
-            user_id=user_id,
-            content=f"Video content: {result['description']}",
-            type="video",
-            score=result["toxicity_score"]
-        )
-    
-    return {
-        "user_id": user_id,
-        "description": result["description"],
-        "toxicity_score": result["toxicity_score"]
-    }
-
 @app.websocket("/ws/audio")
 async def audio_socket(websocket: WebSocket):
     await websocket_endpoint(websocket)
@@ -85,6 +56,37 @@ async def analyze_image_endpoint(file: UploadFile = File(...), user_id: str = "u
         )
 
     return {"user_id": user_id, "score": score, "description": description}
+
+@app.post("/analyze-file/")
+async def analyze_file_endpoint(file: UploadFile = File(...), user_id: str = "unknown"):
+    """
+    Analyze any type of file for content description and toxicity.
+    
+    Args:
+        file: The file to analyze
+        user_id: ID of the user uploading the file
+        
+    Returns:
+        JSON with user_id, description, and toxicity_score
+    """
+    result = await analyze_file_content(file.file, file.filename)
+    
+    description = result.get("description", "No description available.")
+    score = result.get("toxicity_score", 0.5)
+    
+    if score > 0.8:
+        report_violation(
+            user_id=user_id,
+            content=f"File content: {description}",
+            type="file",
+            score=score
+        )
+    
+    return {
+        "user_id": user_id,
+        "description": description,
+        "toxicity_score": score,
+    }
 
 @app.get("/users/{user_id}/violations/recent")
 async def get_recent_user_violations(request: Request, user_id: str, days: int = Query(default=60, description="Number of days back for the PDF report"), admin_id: str = Query(..., description="ID of the admin generating the report")):

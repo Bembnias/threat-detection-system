@@ -1,18 +1,7 @@
 gabguard-server/
 │
-├── main.py                         # Główny serwer FastAPI
-├── models/
-│   ├── file_analyzer.py            #annaliza plików tekstowych OpenAI
-│   ├── image_moderator.py          # Analiza obrazów OpenAI
-│   ├── video_analysis.py           # Analiza video OpenAI
-│   ├── text_classifier.py          # NLP (toxicity) + OpenAI
-│   └── audio_analyzer.py           # Whisper (mowa na tekst)
-├── schemas.py                      # Schematy Pydantic
 ├── db/
 │   └── mongodb.py                  # MongoDB (połączenie i operacje)
-├── websocket/
-│   └── socket_handler.py           # WebSocket obsługa
-├── config_app.py                   # Ustawienia globalne
 ├── fonts/
 |   ├── DejaVuSans-Bold.ttf
 |   ├── DejaVuSans-BoldOblique.ttf
@@ -20,5 +9,17 @@ gabguard-server/
 |   └── DejaVuSans.ttf
 ├── logo
 |   └── Logo_GabGuard.png           # Logo systemu
-└── report
-    └── report_generator.py         # Generator raportu
+├── models/
+│   ├── file_analyzer.py            #annaliza plików tekstowych OpenAI
+│   ├── image_moderator.py          # Analiza obrazów OpenAI
+│   ├── video_analysis.py           # Analiza video OpenAI
+│   ├── text_classifier.py          # NLP (toxicity) + OpenAI
+│   └── audio_analyzer.py           # Whisper (mowa na tekst)
+├── report
+│   └── report_generator.py         # Generator raportu
+├── websocket/
+│   └── socket_handler.py           # WebSocket obsługa
+├── config_app.py                   # Ustawienia globalne
+├── main.py                         # Główny serwer FastAPI
+│── schemas.py                      # Schematy Pydantic
+└── config_app.py                   # Ustawienia globalne

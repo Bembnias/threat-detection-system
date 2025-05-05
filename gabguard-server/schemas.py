@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime
+from fastapi import UploadFile, File
 
 class TextRequest(BaseModel):
     text: str
@@ -16,18 +17,23 @@ class AudioResponse(BaseModel):
     transcription: str
     toxicity_score: float
 
-class VideoResponse(BaseModel):
+class FileAnalysisResponse(BaseModel):
     user_id: str
-    description: str
+    description: str  # Changed from transcription to description to match endpoint
     toxicity_score: float
 
-class Violation(BaseModel):
-    id: Optional[str] = Field(alias="_id")
+class ViolationRequest(BaseModel):
     user_id: str
-    type: str
-    content: str
-    score: float
-    timestamp: datetime
+    from_date: Optional[datetime] = Field(None, description="Start date for violations filter")
+    to_date: Optional[datetime] = Field(None, description="End date for violations filter")
 
-class RecentViolationsResponse(BaseModel):
-    violations: List[Violation]
+class ViolationRecord(BaseModel):
+    timestamp: datetime
+    violation_type: str  # e.g., "text", "audio", "file"
+    content: Optional[str] = None
+    toxicity_score: float
+
+class ViolationResponse(BaseModel):
+    user_id: str
+    total_violations: int
+    violations: List[ViolationRecord]

@@ -84,16 +84,8 @@ async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
         # Handle audio files with specialized audio analysis module
         if mime_type.startswith('audio/') or file_extension in [".mp3", ".wav", ".ogg", ".m4a", ".flac", ".aac"]:
             try:
-                # Check file size - OpenAI API has a 25MB limit
-                if len(file_content) > 25 * 1024 * 1024:  # 25 MB in bytes
-                    return {
-                        "description": f"Audio file is too large for analysis (size: {len(file_content) / (1024 * 1024):.2f} MB, limit: 25 MB). Consider compressing or trimming the file.",
-                        "toxicity_score": -1,
-                        "mime_type": mime_type,
-                        "file_size": len(file_content)
-                    }
-                
-                # Create a temporary file
+                # Usunięcie sprawdzania limitu rozmiaru pliku
+                # Utworzenie pliku tymczasowego
                 with tempfile.NamedTemporaryFile(suffix=file_extension, delete=False) as temp_file:
                     temp_file.write(file_content)
                     temp_path = temp_file.name
@@ -117,15 +109,6 @@ async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
                 # If audio analysis fails, fall back to generic analysis
                 error_msg = str(e)
                 
-                # Check for specific error messages
-                if "Maximum content size limit" in error_msg:
-                    return {
-                        "description": f"Audio file is too large for analysis (limit: 25 MB). Please compress or trim the file.",
-                        "toxicity_score": -1,
-                        "mime_type": mime_type,
-                        "file_size": len(file_content)
-                    }
-                
                 return {
                     "description": f"Audio file that could not be analyzed: {error_msg}",
                     "toxicity_score": -1,
@@ -136,15 +119,7 @@ async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
         # Handle image files with specialized image analysis module
         if mime_type.startswith('image/') or file_extension in [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff", ".svg"]:
             try:
-                # Check file size - OpenAI API has a 20MB limit for images
-                if len(file_content) > 20 * 1024 * 1024:  # 20 MB in bytes
-                    return {
-                        "description": f"Image file is too large for analysis (size: {len(file_content) / (1024 * 1024):.2f} MB, limit: 20 MB). Consider resizing or compressing the image.",
-                        "toxicity_score": -1,
-                        "mime_type": mime_type,
-                        "file_size": len(file_content)
-                    }
-                
+                # Usunięcie sprawdzania limitu rozmiaru pliku dla obrazów
                 # Analyze image directly using the analyze_image function
                 result = await analyze_image(file_content)
                 
@@ -156,15 +131,6 @@ async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
             except Exception as e:
                 error_msg = str(e)
                 
-                # Check for specific error messages
-                if "Maximum content size limit" in error_msg:
-                    return {
-                        "description": f"Image file is too large for analysis (limit: 20 MB). Please resize or compress the image.",
-                        "toxicity_score": -1,
-                        "mime_type": mime_type,
-                        "file_size": len(file_content)
-                    }
-                    
                 # If image analysis fails, fall back to generic analysis
                 return {
                     "description": f"Image file that could not be analyzed: {error_msg}",

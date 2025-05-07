@@ -1,4 +1,4 @@
-# GabGuard – Uruchamianie serwera 
+# GabGuard – Informacje o serwerze
 
 ## 📁 Utworzenie wymaganych katalogów
 
@@ -65,7 +65,7 @@ pip install -r requirements.txt
 4. Uruchom backend FastAPI:
 
 ```bash
-uvicorn main:app --reload
+python main.py
 ```
 
 ---
@@ -158,6 +158,16 @@ Ten endpoint generuje raport w formacie PDF dla konkretnego użytkownika.  Dost�
 **Zwracane dane**:
 
 Plik PDF zawierający raport naruszeń dla danego użytkownika.
+
+5. `/toxicity/{score_value}` - **Zmiana wartości `toxicity_score`**
+
+Ten endpoint zmienia wartość zmiennej globalnej `toxicity_score`
+
+**Metoda**: PUT
+
+**Parametry** URL:
+
+* `score_value`: Wartość jaką użytkownik chce ustawić dla zmiennej `toxicity_score`
 
 ### Ważne:
 

@@ -39,6 +39,12 @@ gabguard-server/app_config.py      # Jeśli zawiera hasła lub inne wrażliwe da
 gabguard-server/config_app.py
 config_app.py
 config_api.py
+cert.pem
+key.pem
+gabguard-server/cert.pem
+gabguard-server/key.pem
+gabguard-server/https/cert.pem
+gabguard-server/https/key.pem
 # *.ini           # Inne pliki konfiguracyjne
 # *.json          # Inne pliki konfiguracyjne
 

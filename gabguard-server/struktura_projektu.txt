@@ -7,6 +7,9 @@ gabguard-server/
 |   ├── DejaVuSans-BoldOblique.ttf
 |   ├── DejaVuSans-Oblique.ttf
 |   └── DejaVuSans.ttf
+├── https/
+│   ├── cert.pem                    # Certyfikat
+│   └── key.pem                     # Klucz
 ├── logo
 |   └── Logo_GabGuard.png           # Logo systemu
 ├── models/

@@ -8,6 +8,29 @@ mkdir C:\data\db
 
 ---
 
+## 🔑 Instalacja OpenSSL (dla HTTPS)
+
+1. Pobierz OpenSSL:
+* Przejdź do [OpenSSL](https://slproweb.com/products/Win32OpenSSL.html)
+* Pobierz odpowiednią wersję.
+
+2. Zainstaluj OpenSSL:
+* Uruchom instalator.
+* Wybierz katalog systemowy Windows (np. `C:\Windows\System32`) jako miejsce kopiowania plików DLL.
+* Dodaj katalog instalacyjny OpenSSL (np. `C:\Program Files\OpenSSL-Win64\bin`) do zmiennej środowiskowej `PATH`.
+
+---
+
+## 📜 Generowanie Certyfikatu (dla HTTPS)
+
+1. Przejdź do katalogu `...\gabguard-server\https`
+2. Otwórz Wiersz Polecenia (CMD) lub PowerShell jako Administrator w tym katalogu.
+3. Uruchom polecenie:
+```bash
+openssl req -x509 -newkey rsa:4096 -keyout https/key.pem -out https/cert.pem -days 365 -nodes -subj "/CN=localhost"
+```
+* To wygeneruje key.pem i cert.pem w folderze https.
+
 ## 📦 Przejście do katalogu
 
 ```bash
@@ -47,7 +70,7 @@ uvicorn main:app --reload
 
 ## 📝 Notatki
 
-- Dokumentacja API po uruchomieniu dostępna pod `http://127.0.0.1:8000/docs`.
+- Dokumentacja API po uruchomieniu dostępna pod `https://127.0.0.1/docs`.
 
 ---
 

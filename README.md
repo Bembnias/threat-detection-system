@@ -27,9 +27,11 @@ mkdir C:\data\db
 2. Otwórz Wiersz Polecenia (CMD) lub PowerShell jako Administrator w tym katalogu.
 3. Uruchom polecenie:
 ```bash
-openssl req -x509 -newkey rsa:4096 -keyout https/key.pem -out https/cert.pem -days 365 -nodes -subj "/CN=localhost"
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
 ```
 * To wygeneruje key.pem i cert.pem w folderze https.
+
+---
 
 ## 📦 Przejście do katalogu
 

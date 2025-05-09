@@ -1,10 +1,10 @@
+import os
 import openai
 import base64
-from config_api import OpenAI_api
 from typing import Dict
 
 # Ustawienie klucza API OpenAI
-openai.api_key = OpenAI_api
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Funkcja generująca opis obrazu
 async def generate_image_description(image_bytes: bytes) -> str:

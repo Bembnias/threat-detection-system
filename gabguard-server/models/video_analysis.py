@@ -3,7 +3,6 @@ import tempfile
 import subprocess
 import openai
 from pathlib import Path
-from config_api import OpenAI_api
 import logging
 
 # Configure logging
@@ -11,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Configure OpenAI API key
-openai.api_key = OpenAI_api
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 async def analyze_video(video_file):
     try:

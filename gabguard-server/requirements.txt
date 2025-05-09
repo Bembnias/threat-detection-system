@@ -15,4 +15,4 @@ imageio[ffmpeg]         # Odczyt i zapis obrazów oraz wideo
 PyPDF2
 python-docx
 python-magic
-python-magic-bin
+#python-magic-bin       # Zakomentowane dla dockera, na windows odkomentować

@@ -1,11 +1,10 @@
+import os
 import openai
 import tempfile
-import os
 from pydub import AudioSegment
 from models.text_classifier import analyze_text
-from config_api import OpenAI_api
 
-openai.api_key = OpenAI_api
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def analyze_audio(file):
     # Utworzenie katalogu tymczasowego dla plików większego rozmiaru

@@ -1,6 +1,6 @@
+import os
 from transformers import pipeline
 from googletrans import Translator
-from config_api import OpenAI_api
 import openai
 
 # Inicjalizacja klasyfikatora toksyczności
@@ -10,7 +10,7 @@ classifier = pipeline("text-classification", model="unitary/toxic-bert")
 translator = Translator()
 
 # Ustawienie klucza API OpenAI
-openai.api_key = OpenAI_api
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 def gpt_check_toxicity(text: str):

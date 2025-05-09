@@ -56,3 +56,6 @@ coverage/
 # Pliki uruchamiające i opisy
 start.ps1
 .uruchomienie
+
+# Zmienne środowiskowe
+.env

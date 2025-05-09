@@ -9,14 +9,13 @@ import magic
 import tempfile
 import zipfile
 import xml.etree.ElementTree as ET
-from config_api import OpenAI_api
 import openai
 from models.video_analysis import analyze_video
 from models.audio_analyzer import analyze_audio
 from models.image_moderator import analyze_image
 
 # Use API key from config
-openai.api_key = OpenAI_api
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 async def analyze_file_content(file: BinaryIO, filename: str) -> Dict[str, Any]:
     """

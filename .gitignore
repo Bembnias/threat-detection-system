@@ -59,3 +59,4 @@ start.ps1
 
 # Zmienne środowiskowe
 .env
+gabguard-bot/node_modules/

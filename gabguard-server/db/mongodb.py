@@ -1,13 +1,17 @@
+import os
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 
 client = None
 db = None
 
+MONGO_CONNECTION_STRING = os.getenv('MONGO_URI', 'mongodb://localhost:27017/gabguard')
+DB_NAME = os.getenv('MONGO_DB_NAME', 'gabguard')
+
 def init_db():
     global client, db
-    client = MongoClient("mongodb://localhost:27017/")
-    db = client["gabguard"]
+    client = MongoClient(MONGO_CONNECTION_STRING)
+    db = client[DB_NAME]
 
 def report_violation(user_id, content, type, score):
     db.violations.insert_one({

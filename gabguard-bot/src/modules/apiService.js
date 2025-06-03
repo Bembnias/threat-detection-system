@@ -25,7 +25,8 @@ async function analyzeTextApi(text, userId, baseUrl) {
     },
     {
       headers: { 'Content-Type': 'application/json' },
-      httpsAgent: baseUrl.startsWith('https://127.0.0.1') ? httpsAgent : undefined,
+      httpsAgent:
+        baseUrl.startsWith('https://127.0.0.1') || baseUrl.startsWith('https://server') ? httpsAgent : undefined,
     }
   )
   return response.data
@@ -63,7 +64,8 @@ async function analyzeFileApi(attachment, userId, baseUrl, tempDir) {
     console.log(`📤 API: Wysyłanie pliku ${attachment.name} do ${apiEndpoint}`)
     const apiFileResponse = await axios.post(apiEndpoint, formData, {
       headers: { ...formData.getHeaders() },
-      httpsAgent: baseUrl.startsWith('https://127.0.0.1') ? httpsAgent : undefined,
+      httpsAgent:
+        baseUrl.startsWith('https://127.0.0.1') || baseUrl.startsWith('https://server') ? httpsAgent : undefined,
     })
     return apiFileResponse.data
   } finally {
@@ -98,7 +100,11 @@ async function analyzeVoiceAudioApi(audioBuffer, userId, baseUrl, filename, cont
         ...formData.getHeaders(),
       },
       httpsAgent:
-        baseUrl.startsWith('https://127.0.0.1') || baseUrl.startsWith('https://localhost') ? httpsAgent : undefined,
+        baseUrl.startsWith('https://127.0.0.1') ||
+        baseUrl.startsWith('https://localhost') ||
+        baseUrl.startsWith('https://server')
+          ? httpsAgent
+          : undefined,
     })
     return response.data
   } catch (error) {
@@ -121,7 +127,8 @@ async function fetchUserReportApi(targetUserId, baseUrl, adminId) {
   console.log(`🛡️ API: Żądanie raportu dla użytkownika ${targetUserId}`)
   return axios.get(`${baseUrl}/users/${targetUserId}/violations/recent?user_id_admin=${adminId}`, {
     responseType: 'arraybuffer',
-    httpsAgent: baseUrl.startsWith('https://127.0.0.1') ? httpsAgent : undefined,
+    httpsAgent:
+      baseUrl.startsWith('https://127.0.0.1') || baseUrl.startsWith('https://server') ? httpsAgent : undefined,
   })
 }
 
@@ -137,7 +144,8 @@ async function updateToxicityScoreApi(scoreValue, baseUrl) {
     `${baseUrl}/toxicity/${scoreValue}`,
     {},
     {
-      httpsAgent: baseUrl.startsWith('https://127.0.0.1') ? httpsAgent : undefined,
+      httpsAgent:
+        baseUrl.startsWith('https://127.0.0.1') || baseUrl.startsWith('https://server') ? httpsAgent : undefined,
     }
   )
   return response.data

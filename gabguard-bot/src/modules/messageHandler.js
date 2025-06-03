@@ -1,5 +1,5 @@
 const { analyzeTextApi, analyzeFileApi } = require('./apiService')
-const { notifyAdmins } = require('./utils')
+const { notifyAdmins, warnUser } = require('./utils')
 const { handleAdminCommand } = require('./adminCommands')
 
 async function handleTextMessage(message, config) {
@@ -34,12 +34,22 @@ async function handleTextMessage(message, config) {
         console.warn(`Nie udało się wysłać DM do ${message.author.tag}: ${dmError.message}`)
       }
       await notifyAdmins(
-        `🗑️ Usunięto wiadomość od użytkownika ${
+        `🗑️ Usunięto wiadomość od użytkownika @${
           message.author.tag
-        } (ID: ${userId}) z powodu wysokiej toksyczności (${toxicityScore.toFixed(
-          2
-        )}).\nTreść: "${analyzedText}"\nKanał: #${message.channel.name}`,
+        } (ID: ${userId}) z powodu wysokiej toksyczności (${toxicityScore.toFixed(2)}).\nTreść: "${analyzedText.slice(
+          0,
+          100
+        )}"\nKanał: #${message.channel.name}`,
         config
+      )
+      await warnUser(
+        session.userId,
+        `Twoja wiadomość "${analyzedText.slice(
+          0,
+          100
+        )}" została oznaczona jako toksyczna i usunięta (${toxicityScore.toFixed(
+          2
+        )}). Prosimy o zachowanie kultury wypowiedzi.`
       )
     } else if (toxicityScore >= config.TOXICITY_THRESHOLD_WARN) {
       console.info(`⚠️ Wiadomość od ${message.author.tag} oznaczona jako potencjalnie toksyczna (${toxicityScore}).`)
@@ -109,6 +119,12 @@ async function handleFileAttachment(attachment, message, config) {
           attachment.name
         }\nZidentyfikowana treść: "${contentIdentifier}"\nKanał: #${message.channel.name}`,
         config
+      )
+      await warnUser(
+        session.userId,
+        `Twoja wiadomość "${attachment.name}" została oznaczona jako toksyczna i usunięta (${toxicityScore.toFixed(
+          2
+        )}). Prosimy o zachowanie kultury wypowiedzi.`
       )
     } else if (toxicityScore >= config.TOXICITY_THRESHOLD_WARN) {
       console.info(

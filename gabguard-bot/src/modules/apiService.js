@@ -74,6 +74,43 @@ async function analyzeFileApi(attachment, userId, baseUrl, tempDir) {
 }
 
 /**
+ * Analizuje dane audio poprzez bezpośrednie wysłanie do API.
+ * @param {Buffer} audioBuffer Bufor zawierający dane audio (WAV).
+ * @param {string} userId ID użytkownika, do którego należy nagranie.
+ * @param {string} baseUrl Bazowy URL API.
+ * @returns {Promise<object>} Dane odpowiedzi z API.
+ */
+async function analyzeVoiceAudioApi(audioBuffer, userId, baseUrl, filename, contentType) {
+  const formData = new FormData()
+  formData.append('file', audioBuffer, {
+    filename: filename,
+    contentType: contentType,
+  })
+
+  const endpoint = `${baseUrl}/analyze_audio?user_id=${encodeURIComponent(userId)}`
+  console.log(
+    `🎤 API: Analizowanie nagrania głosowego użytkownika ${userId} (${audioBuffer.length} bajtów) jako ${filename} do ${endpoint}`
+  )
+
+  try {
+    const response = await axios.post(endpoint, formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+      httpsAgent:
+        baseUrl.startsWith('https://127.0.0.1') || baseUrl.startsWith('https://localhost') ? httpsAgent : undefined,
+    })
+    return response.data
+  } catch (error) {
+    console.error(`💥 Błąd API podczas analizy audio dla użytkownika ${userId}:`, error.message)
+    if (error.response) {
+      console.error('Odpowiedź API (audio error):', error.response.status, error.response.data)
+    }
+    throw error // Rzuć błąd dalej, aby voiceHandler mógł go złapać
+  }
+}
+
+/**
  * Pobiera raport naruszeń użytkownika.
  * @param {string} targetUserId ID użytkownika, dla którego generowany jest raport.
  * @param {string} baseUrl Bazowy URL API.
@@ -109,6 +146,7 @@ async function updateToxicityScoreApi(scoreValue, baseUrl) {
 module.exports = {
   analyzeTextApi,
   analyzeFileApi,
+  analyzeVoiceAudioApi,
   fetchUserReportApi,
   updateToxicityScoreApi,
 }

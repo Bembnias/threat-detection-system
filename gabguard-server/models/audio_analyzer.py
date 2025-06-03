@@ -11,7 +11,7 @@ def analyze_audio(file):
     temp_dir = tempfile.mkdtemp()
     try:
         # Zapisz cały plik do tymczasowego pliku
-        input_path = os.path.join(temp_dir, "input_audio.mp3")
+        input_path = os.path.join(temp_dir, "input_audio.wav")
         with open(input_path, "wb") as tmp:
             tmp.write(file.read())
         
@@ -34,10 +34,18 @@ def analyze_audio(file):
         # Jeśli plik jest zbyt duży dla API OpenAI (>25MB), dzielimy go na części
         if wav_size > 25 * 1024 * 1024:
             transcription = process_large_audio_file(audio, temp_dir)
+            # Analiza transkrypcji pod kątem toksyczności
+            bert_score, gpt_score = analyze_text(transcription)
         else:
             # Standardowe przetwarzanie dla mniejszych plików
             with open(wav_path, "rb") as audio_file:
                 transcription = openai.Audio.transcribe("whisper-1", audio_file)["text"]
+                
+            print(f"TRANSKRYPCJA AUDIO: '{transcription}'")
+    
+            # Analiza transkrypcji pod kątem toksyczności
+            bert_score, gpt_score = analyze_text(transcription)
+            print(f"WYNIKI OCENY: BERT={bert_score}, GPT={gpt_score}")
         
         # Analiza transkrypcji pod kątem toksyczności
         score, gpt_score = analyze_text(transcription)

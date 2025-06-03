@@ -1,7 +1,9 @@
 const client = require('./src/discordClient')
 const config = require('./src/config')
 const { onMessageCreate } = require('./src/modules/messageHandler')
-const { ensureDirectoryExists } = require('./src/modules/utils')
+const { ensureDirectoryExists, isAdministrator } = require('./src/modules/utils')
+const { joinChannelCmd, leaveChannelCmd } = require('./src/modules/voiceHandler')
+const { PermissionsBitField } = require('discord.js')
 
 ensureDirectoryExists(config.TEMP_FILE_DIR)
 
@@ -24,6 +26,29 @@ client.once('ready', () => {
 })
 
 client.on('messageCreate', async (message) => {
+  if (message.content.startsWith(config.COMMAND_PREFIX)) {
+    const args = message.content.slice(config.COMMAND_PREFIX.length).trim().split(/ +/)
+    const command = args.shift().toLowerCase()
+
+    if (command === 'joinvoice') {
+      if (
+        !isAdministrator(message.member, config) &&
+        !message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)
+      )
+        return message.reply('Brak uprawnień.')
+      await joinChannelCmd(message)
+      return
+    } else if (command === 'leavevoice') {
+      if (
+        !isAdministrator(message.member, config) &&
+        !message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)
+      )
+        return message.reply('Brak uprawnień.')
+      await leaveChannelCmd(message)
+      return
+    }
+  }
+
   try {
     await onMessageCreate(message, config)
   } catch (error) {

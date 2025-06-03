@@ -44,6 +44,23 @@ async function notifyAdmins(messageContent, config) {
 }
 
 /**
+ * Wysyła prywatną wiadomość z ostrzeżeniem do użytkownika.
+ * @param {string} userId ID użytkownika do ostrzeżenia
+ * @param {string} warningMessage Treść ostrzeżenia
+ */
+async function warnUser(userId, warningMessage) {
+  try {
+    const user = await client.users.fetch(userId)
+    if (user) {
+      await user.send(warningMessage)
+      console.log(`Wysłano ostrzeżenie do użytkownika ${user.tag} (${userId})`)
+    }
+  } catch (err) {
+    console.warn(`Nie udało się wysłać ostrzeżenia do użytkownika ${userId}: ${err.message}`)
+  }
+}
+
+/**
  * Zapewnia istnienie katalogu tymczasowego.
  * @param {string} directoryPath Ścieżka do katalogu
  */
@@ -56,6 +73,7 @@ function ensureDirectoryExists(directoryPath) {
 
 module.exports = {
   isAdministrator,
+  warnUser,
   notifyAdmins,
   ensureDirectoryExists,
 }

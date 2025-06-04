@@ -1,174 +1,108 @@
-# GabGuard – Informacje o serwerze
 
-## 📁 Utworzenie wymaganych katalogów
 
-```bash
-mkdir C:\data\db
-```
+<p align="center">
+  <img src="https://github.com/Bembnias/threat-detection-system/blob/a4265ff742112a0c0740e5b3afb109fbfc4df63f/gabguard-server/logo/Logo_GabGuard.png" alt="GabGuard Logo" width="250"/>
+  <h1>GabGuard: Twój Strażnik Bezpiecznej Komunikacji Online 🛡️</h1>
+  <h3>System AI do analizy rozmów i wykrywania gróźb, wulgaryzmów oraz mowy nienawiści</h3>
+</p>
 
----
+## Autorzy
 
-## 🔑 Instalacja OpenSSL (dla HTTPS)
-
-1. Pobierz OpenSSL:
-* Przejdź do [OpenSSL](https://slproweb.com/products/Win32OpenSSL.html)
-* Pobierz odpowiednią wersję.
-
-2. Zainstaluj OpenSSL:
-* Uruchom instalator.
-* Wybierz katalog systemowy Windows (np. `C:\Windows\System32`) jako miejsce kopiowania plików DLL.
-* Dodaj katalog instalacyjny OpenSSL (np. `C:\Program Files\OpenSSL-Win64\bin`) do zmiennej środowiskowej `PATH`.
-
----
-
-## 📜 Generowanie Certyfikatu (dla HTTPS)
-
-1. Przejdź do katalogu `...\gabguard-server\https`
-2. Otwórz Wiersz Polecenia (CMD) lub PowerShell jako Administrator w tym katalogu.
-3. Uruchom polecenie:
-```bash
-openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
-```
-* To wygeneruje key.pem i cert.pem w folderze https.
+<p align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/Bembnias">
+            <img src="https://avatars.githubusercontent.com/u/35929872?v=4" width="50px" alt="Mateusz Bienias"/>
+            <br />
+            <sub><b>Mateusz Bienias</b></sub>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/Marcin177">
+            <img src="https://avatars.githubusercontent.com/u/115288855?v=4" width="50px" alt="Marcin Gonciarz"/>
+            <br />
+            <sub><b>Marcin Gonciarz</b></sub>
+        </a>
+      </td>
+    </tr>
+  </table>
+</p>
 
 ---
 
-## 📦 Przejście do katalogu
+## Krótki opis
 
-```bash
-cd .\gabguard-server\
-```
+GabGuard to innowacyjny projekt oparty na sztucznej inteligencji, którego celem jest automatyczna analiza komunikacji online w czasie rzeczywistym i wykrywanie szkodliwych treści, takich jak groźby, wulgaryzmy oraz mowa nienawiści. Stworzony z myślą o bezpieczniejszych interakcjach cyfrowych, stanowi odpowiedź na rosnące wyzwania w cyfrowym świecie.
 
 ---
 
-
-## ▶️ Uruchomienie aplikacji
-
-1. Aktywuj środowisko wirtualne:
-
-```bash
-.\.venv\Scripts\activate
-```
-
-2. Włącz MongoDB (lokalnie)(inny terminal):
-
-```bash
-c:\mongodb\bin\mongod.exe
-```
-
-3. Instalacja zależności
-
-```bash
-pip install -r requirements.txt
-```
-
-4. Uruchom backend FastAPI:
-
-```bash
-python main.py
-```
+## Spis Treści
+- [O Projekcie](#o-projekcie)
+- [Problem, który rozwiązujemy](#problem-który-rozwiązujemy)
+- [Jak działa GabGuard?](#jak-działa-gabguard)
+- [Kluczowe Cechy](#kluczowe-cechy)
+- [Technologie](#technologie)
+- [Instalacja, Uruchomienie i Użycie](#instalacja-uruchomienie-i-użycie)
 
 ---
 
-## 📝 Notatki
+## O Projekcie
 
-- Dokumentacja API po uruchomieniu dostępna pod `https://127.0.0.1/docs`.
+**GabGuard** to zaawansowany system wykorzystujący sztuczną inteligencję do monitorowania i analizy treści komunikacyjnych w środowiskach online. Naszym głównym celem jest zapewnienie bezpieczniejszej przestrzeni cyfrowej poprzez automatyczne identyfikowanie i sygnalizowanie potencjalnie szkodliwych wypowiedzi. Projekt został opracowany w ramach pracy zaliczeniowej na Akademii Nauk Stosowanych w Nowym Sączu, stanowiąc odpowiedź na rosnące wyzwania związane z cyberprzemocą i negatywnymi treściami w internecie.
 
----
+Projekt GabGuard bazuje na koncepcji wzmocnienia bezpieczeństwa cyfrowego, wychodząc naprzeciw problemowi coraz częstszych przypadków mowy nienawiści, gróźb czy wulgaryzmów w sieci. Dzięki zastosowaniu najnowszych osiągnięć w dziedzinie sztucznej inteligencji i widzenia maszynowego, system ma za zadanie działać prewencyjnie i interwencyjnie, tworząc bardziej pozytywne środowisko dla wszystkich użytkowników.
 
-## ⚙️ Endpointy API
+## Problem, który rozwiązujemy
 
-Poniżej znajduje się lista dostępnych endpointów API wraz z opisem ich funkcjonalności i struktury zwracanych danych.
+W obliczu ekspansji platform komunikacyjnych, problem szkodliwych treści – mowy nienawiści, cyberprzemocy i gróźb – staje się coraz poważniejszy. Istniejące metody moderacji często nie nadążają za skalą problemu, co prowadzi do negatywnych konsekwencji dla użytkowników. GabGuard dostarcza inteligentne, proaktywne rozwiązanie, które wspiera tworzenie zdrowego i bezpiecznego ekosystemu online.
 
-1. `/analyze_text` - **Analiza Tekstu**
+Nacisk kładziemy na to, że obecne rozwiązania (np. ręczna moderacja) są czasochłonne i mało efektywne. GabGuard ma na celu automatyzację tego procesu, jednocześnie zachowując wysoką skuteczność w wykrywaniu subtelnych, kontekstowych niuansów językowych.
 
-Ten endpoint służy do analizy dostarczonego tekstu.
+## Jak działa GabGuard?
 
-**Metoda**: POST
+GabGuard wykorzystuje nowoczesne modele AI do analizy zarówno tekstu, jak i mowy. System nieustannie monitoruje komunikację, identyfikując subtelne wzorce językowe wskazujące na groźby, wulgaryzmy czy mowę nienawiści. Po wykryciu niepożądanej treści, GabGuard może automatycznie podjąć zdefiniowane akcje, takie jak powiadomienie moderatora, usunięcie wiadomości, a nawet tymczasowe zablokowanie użytkownika.
 
-**Zapytanie**: Tekst do analizy przesyłany jest jako plaintext w ciele żądania (request body).
+**Szczegółowy schemat działania:**
 
-**Przykład zapytania (JSON)**:
-```JSON
-{"text": "Przykładowy tekst do analizy."}
-```
+1.  **Moduł Wejściowy:**
+    * System odbiera dane z różnych źródeł, początkowo skupiając się na platformie Discord. Dane mogą być w formie tekstowej (wiadomości z czatów) lub audio (strumienie głosowe z kanałów).
+2.  **Moduł Transkrypcji (dla audio):**
+    * Dla danych audio wykorzystywane są zaawansowane modele Speech-to-Text, takie jak **Whisper OpenAI**. Mowa jest precyzyjnie transkrybowana na tekst, co umożliwia dalszą analizę.
+3.  **Moduł Analizy Językowej (NLP):**
+    * Transkrybowany tekst (lub bezpośrednio dane tekstowe) jest przesyłany do modeli przetwarzania języka naturalnego (NLP), opartych o architekturę **Transformerów z biblioteki Hugging Face**. Modele te analizują kontekst, słowa kluczowe, składnię i semantykę, aby zrozumieć intencje wypowiedzi.
+4.  **Moduł Wykrywania Treści Szkodliwych:**
+    * Na podstawie analizy NLP, specjalnie wytrenowane modele klasyfikują treści pod kątem obecności gróźb, wulgaryzmów oraz mowy nienawiści. System potrafi rozróżnić subtelne różnice w języku.
+5.  **Moduł Reakcji:**
+    * Po wykryciu szkodliwej treści, system może podjąć szereg predefiniowanych działań, zgodnie z konfiguracją:
+        * Wysłanie powiadomienia do moderatorów.
+        * Automatyczne usunięcie problematycznej wiadomości.
+        * Ostrzeżenie użytkownika.
+6.  **Moduł Logowania i Raportowania:**
+    * Incydenty, wykryte treści i podjęte akcje są szczegółowo logowane w bazie danych. Umożliwia to późniejsze analizy, generowanie raportów i stałe doskonalenie algorytmów.
 
-**Zwracane dane (JSON)**:
-```JSON
-{
-  "user_id": "string",
-  "text": "string",
-  "toxicity_score": 0
-}
-```
-* `user_id`: Identyfikator użytkownika, który wysłał tekst.
-* `text`: Przetworzony tekst.
-* `toxicity_score`: Współczynnik toksyczności tekstu. Wartość `0` oznacza brak toksyczności. W przypadku wystąpienia błędu podczas analizy przez model AI, zwracana jest wartość `-1`.
+## Kluczowe Cechy
 
-2. `/analyze_audio` - **Analiza Audio**
+* 🗣️ **Wykrywanie Gróźb:** Wykorzystujemy zaawansowane modele, które analizują wzorce językowe, intonację (w przypadku analizy audio) oraz kontekst, aby precyzyjnie identyfikować intencje agresywne i bezpośrednie groźby.
+* 🤬 **Detekcja Wulgaryzmów:** Skuteczne rozpoznawanie i kategoryzacja niecenzuralnego słownictwa, z uwzględnieniem kontekstu, aby unikać fałszywych alarmów.
+* 🚫 **Analiza Mowy Nienawiści:** Identyfikacja treści promujących dyskryminację, nienawiść lub przemoc na tle rasowym, etnicznym, religijnym, seksualnym itp.
+* 🎮 **Integracja z Discordem:** Początkowo skupiamy się na platformie Discord, oferując bota moderacyjnego, który płynnie integruje się z istniejącymi serwerami.
+* 🧩 **Modułowa Architektura:** System został zaprojektowany z myślą o modułowości, co ułatwia jego rozbudowę, dodawanie nowych funkcji oraz integrację z innymi platformami komunikacyjnymi w przyszłości.
+* 🔒 **Zgodność z RODO:** Projekt uwzględnia kluczowe aspekty prawne związane z ochroną danych osobowych (RODO), zapewniając bezpieczeństwo i prywatność danych użytkowników.
 
-Ten endpoint umożliwia analizę plików audio.
+## Technologie
 
-**Metoda**: POST
+GabGuard został zbudowany z wykorzystaniem nowoczesnych, skalowalnych i wydajnych technologii, aby zapewnić niezawodność i efektywność:
 
-**Zapytanie**: Plik audio (w formacie .mp3 lub .wav) przesyłany jest jako plik w formularzu (multipart/form-data).
+* **Backend:**
+    * [FastAPI](https://fastapi.tiangolo.com/) (Python) - Nowoczesny, szybki (wysoka wydajność) framework webowy do budowania API w Pythonie, idealny do obsługi modeli AI.
+* **Baza Danych:**
+    * [MongoDB](https://www.mongodb.com/) - Elastyczna baza danych NoSQL, pozwalająca na przechowywanie danych w formacie JSON/BSON, idealna do skalowalnych aplikacji.
+* **Sztuczna Inteligencja / Uczenie Maszynowe:**
+    * [Whisper (OpenAI)](https://openai.com/index/whisper/) - Zaawansowany model do transkrypcji mowy na tekst, wspierający wiele języków.
+    * [Transformers (Hugging Face)](https://huggingface.co/docs/transformers/index) - Biblioteka do budowy i trenowania najnowocześniejszych modeli NLP, takich jak BERT, GPT, T5, wykorzystywana do analizy semantycznej tekstu.
+* **Komunikacja:**
+    * [Discord.js](https://discord.js.org/) - Potężna biblioteka JavaScript do interakcji z API Discorda i tworzenia zaawansowanych botów.
+    * [@discordjs/voice](https://www.npmjs.com/package/@discordjs/voice) - Moduł do obsługi połączeń 
 
-**Zwracane dane (JSON)**:
-```JSON
-{
-  "user_id": "string",  
-  "transcription": "string",  
-  "toxicity_score": 0
-}
-```
-* `user_id`: Identyfikator użytkownika, który przesłał plik audio.
-* `transcription`: Transkrypcja zawartości pliku audio na tekst.
-* `toxicity_score`: Współczynnik toksyczności transkrybowanego tekstu. Wartość `0` oznacza brak toksyczności. W przypadku wystąpienia błędu podczas analizy przez model * AI, zwracana jest wartość `-1`.
-
-3. `/analyze-file/` - **Analiza Plików**
-
-Ten endpoint służy do ogólnej analizy plików różnego typu.
-
-**Metoda**: POST
-
-**Zapytanie**: Dowolny typ pliku przesyłany jest jako plik w formularzu (multipart/form-data).
-
-**Zwracane dane (JSON)**:
-```JSON
-{
-  "user_id": "string",  
-  "description": "string",  
-  "toxicity_score": 0
-}
-```
-* `user_id`: Identyfikator użytkownika, który przesłał plik.
-* `description`: Opis zawartości pliku lub wyekstrahowany tekst (jeśli to możliwe).
-* `toxicity_score`: Współczynnik toksyczności wyekstrahowanego tekstu (jeśli dotyczy). Wartość `0` oznacza brak toksyczności. W przypadku wystąpienia błędu podczas analizy przez model AI, zwracana jest wartość `-1`.
-
-4. `/users/{user_id}/violations/recent` - **Generowanie Raportu Naruszeń Użytkownika**
-
-Ten endpoint generuje raport w formacie PDF dla konkretnego użytkownika.  Dostępny jest dla administratorów systemu.
-
-**Metoda**: GET
-
-**Parametry** URL:
-
-* `user_id`: Identyfikator użytkownika, dla którego ma zostać wygenerowany raport. Należy go umieścić bezpośrednio w ścieżce URL, np. `/users/123/violations/recent`.
-
-**Zwracane dane**:
-
-Plik PDF zawierający raport naruszeń dla danego użytkownika.
-
-5. `/toxicity/{score_value}` - **Zmiana wartości `toxicity_score`**
-
-Ten endpoint zmienia wartość zmiennej globalnej `toxicity_score`
-
-**Metoda**: PUT
-
-**Parametry** URL:
-
-* `score_value`: Wartość jaką użytkownik chce ustawić dla zmiennej `toxicity_score`
-
-### Ważne:
-
-W przypadku wszystkich endpointów analizujących tekst ( `/analyze_text`, `/analyze_audio`, `/analyze-file/`), jeżeli wartość `toxicity_score` wynosi `-1`, oznacza to, że wystąpił błąd podczas przetwarzania i analizy tekstu/pliku przez model sztucznej inteligencji.
+## Instalacja, Uruchomienie i Użycie
